@@ -1,4 +1,4 @@
-import { InvalidArgumentError } from '../Errors/InvalidArgumentError';
+import { InvalidArgumentError } from '../error/InvalidArgumentError';
 
 export class Email {
   readonly value: string;

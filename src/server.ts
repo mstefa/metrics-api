@@ -9,8 +9,8 @@ import * as http from 'http';
 import httpStatus from 'http-status';
 import morgan from 'morgan';
 
-import { registerRoutes as registerArticleRoutes } from './article/routes';
-import { DependencyInjectionContainer as DependencyInjectionContainer } from './DependencyInjectionContainer';
+import { registerRoutes as registerArticleRoutes } from './metric/routes';
+import { MetricDependencyInjectionContainer } from './MetricDependencyInjectionContainer';
 import { Logger } from './shared/infrastructure/logger/Logger';
 
 const router = Router();
@@ -41,8 +41,7 @@ export default class Server {
     this.express.use(morganMiddleware);
 
     this.express.use(compress());
-    // TODO https://www.npmjs.com/package/typed-inject
-    DependencyInjectionContainer.DependencyInjectionContainerLoad();
+    MetricDependencyInjectionContainer.load();
 
     router.get('/check-health', async (req: Request, res: Response) => {
       res.send('server running 💪');
@@ -61,10 +60,10 @@ export default class Server {
 
   async start(): Promise<void> {
     Logger.info('  Connecting to DB... \n');
-    await (await DependencyInjectionContainer.mongoClient).connect();
+    await (await MetricDependencyInjectionContainer.mongoClient).connect();
     Logger.info('  checking DB connection... \n');
 
-    await (await DependencyInjectionContainer.mongoClient).db('admin').command({ ping: 1 });
+    await (await MetricDependencyInjectionContainer.mongoClient).db('admin').command({ ping: 1 });
     Logger.info('  DB Connected! \n');
 
     this.httpServer = await this.express.listen(this.port, () => {
@@ -88,7 +87,7 @@ export default class Server {
 
   async stop(): Promise<void> {
     Logger.info('  Closing DB connection...\n');
-    (await DependencyInjectionContainer.mongoClient).close();
+    (await MetricDependencyInjectionContainer.mongoClient).close();
 
     Logger.info('  DB connection Close\n');
 
