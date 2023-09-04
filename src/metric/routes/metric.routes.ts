@@ -1,5 +1,5 @@
 import { Request, Response, Router } from 'express';
-import { body } from 'express-validator';
+import { body, param } from 'express-validator';
 
 import { MetricDependencyInjectionContainer } from '../../MetricDependencyInjectionContainer';
 import { validateReqSchema } from '.';
@@ -20,13 +20,13 @@ export const register = (router: Router) => {
       .withMessage('Value is required and must be a number'),
   ];
 
-  // const reqGetArticleSchema = [param('id').exists().isUUID()];
+  const reqGetArticleSchema = [param('name').optional()];
 
   router.post('/metric', reqPostArticleSchema, validateReqSchema, (req: Request, res: Response) =>
     MetricDependencyInjectionContainer.postMetricController.run(req, res)
   );
 
-  // router.get('/metrics', reqGetArticleSchema, validateReqSchema, (req: Request, res: Response) =>
-  //   DependencyInjectionContainer.getBlogPostController.run(req, res)
-  // );
+  router.get('/metrics', reqGetArticleSchema, validateReqSchema, (req: Request, res: Response) =>
+    MetricDependencyInjectionContainer.getMetricsController.run(req, res)
+  );
 };

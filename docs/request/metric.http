@@ -1,9 +1,12 @@
-### Create an article
+### Add a metric
 POST http://localhost:3000/metric HTTP/1.1
 content-type: application/json
 
       {
-        "timestamp": "2023-09-03T15:45:23Z",
+        "timestamp": "2023-09-03T15:45:23.000Z",
         "name": "response_time",
         "value": 10
       }
+
+### Create an article
+GET http://localhost:3000/metrics/ HTTP/1.1

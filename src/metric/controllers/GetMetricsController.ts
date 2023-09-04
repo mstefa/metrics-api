@@ -2,22 +2,22 @@ import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 
 import { Logger } from '../../shared/infrastructure/logger/Logger';
-import { ArticleGetter } from '../application/ArticleGetter';
+import { MetricsGetter } from '../application/MetricsGetter';
 import { Controller } from './Controller';
 
 
-export class GetBlogPostController extends Controller {
-  private articleGetter: ArticleGetter
-  constructor(articleGetter: ArticleGetter) {
+export class GetMetricsController extends Controller {
+  private metricGetter: MetricsGetter
+  constructor(articleGetter: MetricsGetter) {
     super();
-    this.articleGetter = articleGetter;
+    this.metricGetter = articleGetter;
   }
 
   async run(req: Request, res: Response) {
     const id = req.params.id;
     Logger.info(`request received in ${req.path}`);
     try {
-      const article = await this.articleGetter.run(id);
+      const article = await this.metricGetter.run(id);
       res.status(httpStatus.OK).json(article);
     } catch (error) {
       this.errorHandling(error, res);

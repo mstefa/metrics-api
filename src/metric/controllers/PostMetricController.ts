@@ -9,7 +9,7 @@ type MetricRequest = Request & {
   body: Metric;
 };
 
-export class MetricController extends Controller {
+export class PostMetricController extends Controller {
   private metricCreator: MetricCreator;
 
   constructor(metricCreator: MetricCreator) {

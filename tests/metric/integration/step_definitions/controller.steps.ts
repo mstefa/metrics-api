@@ -17,7 +17,10 @@ Given('I send a GET request to {string}', (route: string) => {
 
 Given('I send a POST request to {string} with body:', (route: string, bodyData: string) => {
   const body = JSON.parse(bodyData)
-  _request = supertest(application.getHTTPServer()).post(route).send(body);
+  _request = supertest(application.getHTTPServer())
+    .post(route)
+    .set('Content-Type', 'application/json')
+    .send(body);
 });
 
 Then('the response status code should be {int}', async (status: number) => {

@@ -9,7 +9,7 @@ import * as http from 'http';
 import httpStatus from 'http-status';
 import morgan from 'morgan';
 
-import { registerRoutes as registerArticleRoutes } from './metric/routes';
+import { registerRoutes as registerMetricRoutes } from './metric/routes';
 import { MetricDependencyInjectionContainer } from './MetricDependencyInjectionContainer';
 import { Logger } from './shared/infrastructure/logger/Logger';
 
@@ -47,7 +47,7 @@ export default class Server {
       res.send('server running 💪');
     });
 
-    registerArticleRoutes(router);
+    registerMetricRoutes(router);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, unused-imports/no-unused-vars
     router.use((err: Error, req: Request, res: Response, next: NextFunction): void => {

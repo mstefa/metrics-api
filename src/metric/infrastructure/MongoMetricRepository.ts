@@ -5,6 +5,7 @@ import { Nullable } from '../../shared/domain/Nullable';
 import { MongoRepository } from '../../shared/infrastructure/mongo/MongoRepository';
 import { Metric } from '../domain/Metric';
 import { MetricRepository } from '../domain/MetricRepository';
+import { MetricName } from '../domain/value-objects/MetricName';
 
 // TODO
 // interface ArticleDocument {
@@ -26,7 +27,10 @@ export class MongoMetricRepository extends MongoRepository<Metric> implements Me
     return
   }
 
-  async search(id: string): Promise<Nullable<Metric>> {
-    throw new Error(`Method not implemented: id # ${id}`)
+  async search(name: MetricName): Promise<Nullable<Metric[]>> {
+    // throw new Error(`Method not implemented: id # ${name}`)
+    console.log(name.value)
+
+    return Promise.resolve(null)
   }
 }

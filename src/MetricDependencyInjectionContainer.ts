@@ -1,5 +1,7 @@
 import { MetricCreator } from './metric/application/MetricCreator';
-import { MetricController } from './metric/controllers/PostMetricController';
+import { MetricsGetter } from './metric/application/MetricsGetter';
+import { GetMetricsController } from './metric/controllers/GetMetricsController';
+import { PostMetricController } from './metric/controllers/PostMetricController';
 import { MongoMetricRepository } from './metric/infrastructure/MongoMetricRepository';
 import { Logger } from './shared/infrastructure/logger/Logger';
 import { MongoClientFactory } from './shared/infrastructure/mongo/MongoClientFactory';
@@ -10,10 +12,12 @@ const metricRepository = new MongoMetricRepository(mongoClient);
 
 //Aplication
 const metricCreator = new MetricCreator(metricRepository);
+const metricGetter = new MetricsGetter(metricRepository)
 
 
 // Controllers
-const postMetricController = new MetricController(metricCreator);
+const postMetricController = new PostMetricController(metricCreator);
+const getMetricsController = new GetMetricsController(metricGetter)
 
 const load = () => {
   Logger.info('  Dependency loaded! \n');
@@ -24,4 +28,5 @@ export const MetricDependencyInjectionContainer = {
   mongoClient,
   metricCreator,
   postMetricController,
+  getMetricsController
 };
