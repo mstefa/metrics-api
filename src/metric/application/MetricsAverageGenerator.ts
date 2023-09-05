@@ -15,7 +15,7 @@ export class MetricsAverageGenerator {
     this.service = new MetricAveragesService();
   }
 
-  async run(id: string): Promise<MetricsAveragesDto> {
+  async run(id: string[]): Promise<MetricsAveragesDto> {
 
     const metrics = await this.repository.search(
       new MetricCriteria(new MetricName('cpu_usage'),

@@ -1,6 +1,6 @@
 import { MetricsAveragesDto } from "../dtos/MetricsAvergaresDto";
 import { Metric } from "./Metric";
-import { IntervalUnitEnum } from "./value-objects/IntervalUnit";
+import { intervalUnitEnum } from "./value-objects/intervalUnit";
 
 export class MetricAveragesService {
 
@@ -23,7 +23,7 @@ export class MetricAveragesService {
     }
 
     const average: MetricsAveragesDto = {
-      intervalUnit: IntervalUnitEnum.SECOND,
+      intervalUnit: intervalUnitEnum.SECOND,
       timeValues: [],
       metricValues: [
         {

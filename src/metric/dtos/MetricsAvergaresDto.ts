@@ -1,12 +1,13 @@
-import { IntervalUnitEnum } from "../domain/value-objects/IntervalUnit";
+import { intervalUnitEnum } from "../domain/value-objects/intervalUnit";
+import { MetricNameEnum } from "../domain/value-objects/MetricName";
 
 type MetricsAveragesValues = {
-  name: string;
+  name: MetricNameEnum;
   values: number[];
 }
 
 export type MetricsAveragesDto = {
-  intervalUnit: IntervalUnitEnum;
+  intervalUnit: intervalUnitEnum;
   timeValues: string[];
   metricValues: MetricsAveragesValues[];
 
