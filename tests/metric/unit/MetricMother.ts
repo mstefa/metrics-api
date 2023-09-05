@@ -20,11 +20,11 @@ export class MetricMother {
     return article
   }
 
-  static fixedDate = (date: Date): Metric => {
+  static randomValues = (date: Date, name: MetricName): Metric => {
 
     const article = new Metric(
       new Timestamp(date),
-      new MetricName(MetricNameMother.random().toString()),
+      name,
       new MetricValue(NumberMother.random()),
     )
 

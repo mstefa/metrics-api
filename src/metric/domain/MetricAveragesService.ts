@@ -3,13 +3,8 @@ import { Metric } from "./Metric";
 import { IntervalUnitEnum } from "./value-objects/IntervalUnit";
 
 export class MetricAveragesService {
-  //private repository: Repository;
 
-  constructor(/**repository: repository*/) {
-    //this.repository = repository;
-  }
-
-  async run(): Promise<void> { }
+  constructor() { }
 
   calculateAveragePerSecond(metrics: Metric[]): MetricsAveragesDto {
     const averagePerSecond = new Map<number, { sum: number, count: number }>();
@@ -27,15 +22,6 @@ export class MetricAveragesService {
       }
     }
 
-    // Calculate the average for each second
-    // for (const [timestampInSeconds, totalValue] of averagePerSecond.entries()) {
-    //   const count = metrics.filter((metric) =>
-    //     Math.floor(metric.timestamp.getTime() / 1000) === timestampInSeconds
-    //   ).length;
-    //   const average = totalValue / count;
-    //   averagePerSecond.set(timestampInSeconds, average);
-    // }
-
     const average: MetricsAveragesDto = {
       intervalUnit: IntervalUnitEnum.SECOND,
       timeValues: [],
@@ -49,7 +35,7 @@ export class MetricAveragesService {
 
 
     for (const [timestampInSeconds, totalValue] of averagePerSecond.entries()) {
-      average.timeValues.push(timestampInSeconds.toString())
+      average.timeValues.push(new Date(timestampInSeconds * 1000).toISOString())
       average.metricValues[0].values.push(totalValue.sum / totalValue.count)
     }
 
