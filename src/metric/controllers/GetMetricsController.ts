@@ -2,13 +2,13 @@ import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 
 import { Logger } from '../../shared/infrastructure/logger/Logger';
-import { MetricsGetter } from '../application/MetricsGetter';
+import { MetricsAverageGenerator } from '../application/MetricsAverageGenerator';
 import { Controller } from './Controller';
 
 
 export class GetMetricsController extends Controller {
-  private metricGetter: MetricsGetter
-  constructor(articleGetter: MetricsGetter) {
+  private metricGetter: MetricsAverageGenerator
+  constructor(articleGetter: MetricsAverageGenerator) {
     super();
     this.metricGetter = articleGetter;
   }

@@ -1,6 +1,6 @@
 import { MetricCreator } from '../../../src/metric/application/MetricCreator';
 import { MetricRepositoryMock } from '../mocks/ArticleRepositoryMock';
-import { MetricMother } from './ArticleMother';
+import { MetricMother } from './MetricMother';
 
 let articleRepositoryMock: MetricRepositoryMock;
 let metricCreator: MetricCreator;

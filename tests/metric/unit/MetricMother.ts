@@ -12,7 +12,18 @@ export class MetricMother {
   static random = (): Metric => {
 
     const article = new Metric(
-      new Timestamp(DateMother.past().toISOString()),
+      new Timestamp(DateMother.past()),
+      new MetricName(MetricNameMother.random().toString()),
+      new MetricValue(NumberMother.random()),
+    )
+
+    return article
+  }
+
+  static fixedDate = (date: Date): Metric => {
+
+    const article = new Metric(
+      new Timestamp(date),
       new MetricName(MetricNameMother.random().toString()),
       new MetricValue(NumberMother.random()),
     )

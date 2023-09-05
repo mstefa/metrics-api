@@ -1,19 +1,20 @@
 
 
 
+import { ObjectId } from 'mongodb';
+
 import { Nullable } from '../../shared/domain/Nullable';
 import { MongoRepository } from '../../shared/infrastructure/mongo/MongoRepository';
 import { Metric } from '../domain/Metric';
+import { MetricCriteria } from '../domain/MetricCriteria';
 import { MetricRepository } from '../domain/MetricRepository';
-import { MetricName } from '../domain/value-objects/MetricName';
 
-// TODO
-// interface ArticleDocument {
-//   _id: ObjectId;
-//   timestamp: Date;
-//   name: string;
-//   value: number;
-// }
+interface ArticleDocument {
+  _id: ObjectId;
+  timestamp: Date;
+  name: string;
+  value: number;
+}
 
 export class MongoMetricRepository extends MongoRepository<Metric> implements MetricRepository {
   protected collectionName(): string {
@@ -27,10 +28,22 @@ export class MongoMetricRepository extends MongoRepository<Metric> implements Me
     return
   }
 
-  async search(name: MetricName): Promise<Nullable<Metric[]>> {
-    // throw new Error(`Method not implemented: id # ${name}`)
-    console.log(name.value)
+  async search(criteria: MetricCriteria): Promise<Nullable<Metric[]>> {
 
-    return Promise.resolve(null)
+    const collection = await this.collection();
+    const metricDocuments = await collection.find<ArticleDocument>({
+      timestamp: {
+        $gt: criteria.from.toString(),
+        $lt: criteria.to.toString()
+      }
+    }).toArray()
+
+    if (metricDocuments.length < 1) {
+      return null;
+    }
+
+    return metricDocuments.map(document =>
+      Metric.fromPrimitives(document.timestamp, document.name, document.value)
+    );
   }
 }

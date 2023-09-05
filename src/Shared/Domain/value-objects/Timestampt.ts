@@ -2,9 +2,7 @@ import { InvalidArgumentError } from '../error/InvalidArgumentError';
 
 export class Timestamp {
   readonly value: Date;
-  constructor(value: string) {
-    this.ensureTimestampFormat(value);
-    const date = new Date(value);
+  constructor(date: Date) {
     this.ensureIsAPastDate(date);
     this.value = date;
   }
@@ -13,7 +11,14 @@ export class Timestamp {
     return this.value.toISOString();
   }
 
-  private ensureTimestampFormat(str: string): void {
+  static fromString(value: string): Timestamp {
+    Timestamp.ensureTimestampFormat(value);
+    const date = new Date(value);
+
+    return new Timestamp(date)
+  }
+
+  static ensureTimestampFormat(str: string): void {
     if (!/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(str)) {
       throw new InvalidArgumentError(`Date <${str}> is should be on ISO Format`);
     }

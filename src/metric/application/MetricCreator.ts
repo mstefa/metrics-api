@@ -14,7 +14,7 @@ export class MetricCreator {
 
   async run(data: MetricDto): Promise<void> {
     const metric = new Metric(
-      new Timestamp(data.timestamp),
+      Timestamp.fromString(data.timestamp),
       new MetricName(data.name),
       new MetricValue(data.value),
     );

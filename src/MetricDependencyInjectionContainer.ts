@@ -1,5 +1,5 @@
 import { MetricCreator } from './metric/application/MetricCreator';
-import { MetricsGetter } from './metric/application/MetricsGetter';
+import { MetricsAverageGenerator } from './metric/application/MetricsAverageGenerator';
 import { GetMetricsController } from './metric/controllers/GetMetricsController';
 import { PostMetricController } from './metric/controllers/PostMetricController';
 import { MongoMetricRepository } from './metric/infrastructure/MongoMetricRepository';
@@ -12,7 +12,7 @@ const metricRepository = new MongoMetricRepository(mongoClient);
 
 //Aplication
 const metricCreator = new MetricCreator(metricRepository);
-const metricGetter = new MetricsGetter(metricRepository)
+const metricGetter = new MetricsAverageGenerator(metricRepository)
 
 
 // Controllers
