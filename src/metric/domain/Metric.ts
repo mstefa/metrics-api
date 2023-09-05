@@ -22,7 +22,7 @@ export class Metric extends AggregateRoot {
   }
 
   static fromPrimitives(
-    timestamp: Date,
+    timestamp: string,
     name: string,
     value: number,
   ): Metric {

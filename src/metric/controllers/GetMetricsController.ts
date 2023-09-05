@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import httpStatus from 'http-status';
 
-import { Logger } from '../../shared/infrastructure/logger/Logger';
 import { MetricsAverageGenerator } from '../application/MetricsAverageGenerator';
 import { Controller } from './Controller';
 
@@ -24,12 +23,15 @@ export class GetMetricsController extends Controller {
 
   async run(req: Request, res: Response) {
     const queryParamNames = req.query.name;
+    const queryParamIntervalUnit = req.query.intervalUnit as string;
+    const from = req.query.from as string;
+    const to = req.query.to as string;
 
-    const names = toArrayOfString(queryParamNames);
-
-    Logger.info(`request received in ${req.path}`);
+    // Logger.info(`request received in ${req.path}`); TODO
     try {
-      const article = await this.metricGetter.run(names);
+      const intervalUnit = parseFloat(queryParamIntervalUnit);
+      const names = toArrayOfString(queryParamNames);
+      const article = await this.metricGetter.run({ names, from, to, intervalUnit });
       res.status(httpStatus.OK).json(article);
     } catch (error) {
       this.errorHandling(error, res);

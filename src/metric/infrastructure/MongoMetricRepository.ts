@@ -11,7 +11,7 @@ import { MetricRepository } from '../domain/MetricRepository';
 
 interface ArticleDocument {
   _id: ObjectId;
-  timestamp: Date;
+  timestamp: string;
   name: string;
   value: number;
 }

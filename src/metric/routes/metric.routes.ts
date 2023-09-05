@@ -3,6 +3,7 @@ import { body, query } from 'express-validator';
 
 import { MetricDependencyInjectionContainer } from '../../MetricDependencyInjectionContainer';
 import { intervalUnitEnum } from '../domain/value-objects/intervalUnit';
+import { MetricNameEnum } from '../domain/value-objects/MetricName';
 import { validateReqSchema } from '.';
 
 export const register = (router: Router) => {
@@ -22,9 +23,9 @@ export const register = (router: Router) => {
   ];
 
   const reqGetArticleSchema = [
-    query('metricName')
-      .notEmpty()
-      .withMessage('metricName is required'),
+    query('name')
+      .isIn(Object.values(MetricNameEnum))
+      .withMessage(`name should be one of ${Object.values(MetricNameEnum).join(', ')}`),
     query('from')
       .notEmpty()
       .isISO8601()

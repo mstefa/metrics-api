@@ -2,20 +2,15 @@ import { InvalidArgumentError } from '../error/InvalidArgumentError';
 
 export class Timestamp {
   readonly value: Date;
-  constructor(date: Date) {
+  constructor(value: string) {
+    Timestamp.ensureTimestampFormat(value);
+    const date = new Date(value);
     this.ensureIsAPastDate(date);
     this.value = date;
   }
 
   toString(): string {
     return this.value.toISOString();
-  }
-
-  static fromString(value: string): Timestamp {
-    Timestamp.ensureTimestampFormat(value);
-    const date = new Date(value);
-
-    return new Timestamp(date)
   }
 
   static ensureTimestampFormat(str: string): void {
