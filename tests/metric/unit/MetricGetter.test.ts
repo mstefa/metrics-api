@@ -9,7 +9,7 @@ const metricsAverageGenerator = new MetricsAverageGenerator(metricRepositoryMock
 
 
 describe('Get metrics Averages', () => {
-  it('Should create a Blog Post successfully', async () => {
+  it('should return the correct average for one metric', async () => {
     const mockedName = MetricNameMother.random();
     const roundedDate = new Date('2023-09-05T13:00:18.000Z');
     const stringRoundedDate = roundedDate.toISOString();
