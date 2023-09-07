@@ -13,6 +13,7 @@
   "scripts": {
     "start": "node dist/index",
     "dev": "nodemon index.ts",
+    "seedDb": "ts-node seedDb.ts",
     "test": "npm run test:unit && npm run test:integration",
     "test:unit": "NODE_ENV=test jest",
     "test:integration": "NODE_ENV=test cucumber-js -p backend",

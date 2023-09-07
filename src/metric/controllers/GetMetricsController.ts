@@ -23,13 +23,12 @@ export class GetMetricsController extends Controller {
 
   async run(req: Request, res: Response) {
     const queryParamNames = req.query.name;
-    const queryParamIntervalUnit = req.query.intervalUnit as string;
+    const intervalUnit = req.query.intervalUnit as string;
     const from = req.query.from as string;
     const to = req.query.to as string;
 
     // Logger.info(`request received in ${req.path}`); TODO
     try {
-      const intervalUnit = parseFloat(queryParamIntervalUnit);
       const names = toArrayOfString(queryParamNames);
       const article = await this.metricGetter.run({ names, from, to, intervalUnit });
       res.status(httpStatus.OK).json(article);

@@ -7,4 +7,15 @@ export class MetricNameMother {
 
     return new MetricName(values[randomIndex]);
   }
+
+  static differentFrom(name: MetricName): MetricName {
+
+    let newName = this.random();
+
+    while (newName.toString() === name.toString()) {
+      newName = this.random();
+    }
+
+    return newName;
+  }
 }

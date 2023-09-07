@@ -1,4 +1,3 @@
-import { EntityNotFoundError } from "../../shared/domain/error/EntityNotFoundError";
 import { Timestamp } from "../../shared/domain/value-objects/Timestampt";
 import { MetricAveragesService } from "../domain/MetricAveragesService";
 import { MetricCriteria } from "../domain/MetricCriteria";
@@ -18,24 +17,15 @@ export class MetricsAverageGenerator {
 
   async run(requestDto: GetMetricsRequestDto): Promise<MetricsAveragesDto> {
 
-    const name = new MetricName(requestDto.names[0])
+    const name = requestDto.names.map(name => new MetricName(name))
     const fromTimestamp = new Timestamp(requestDto.from)
     const toTimestamp = new Timestamp(requestDto.to)
-
-    console.log(toTimestamp)
 
     const metrics = await this.repository.search(
       new MetricCriteria(name, fromTimestamp, toTimestamp)
     )
 
-
-    if (metrics === null) {
-      throw new EntityNotFoundError(`Not implemented ID: ${requestDto}`)
-    }
-    console.log(metrics)
-
-    const response = this.service.calculateAveragePerSecond(metrics);
-
+    const response = this.service.calculateAveragePerSecond(fromTimestamp, toTimestamp, metrics);
 
     return response;
   }
