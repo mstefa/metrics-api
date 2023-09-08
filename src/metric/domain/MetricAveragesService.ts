@@ -3,9 +3,10 @@ import { Timestamp } from "../../shared/domain/value-objects/Timestampt";
 import { MetricsAveragesDto, MetricsAveragesValues } from "../dtos/MetricsAvergaresDto";
 import { Metric } from "./Metric";
 import { intervalUnitEnum } from "./value-objects/intervalUnit";
-import { MetricNameEnum } from "./value-objects/MetricName";
+import { MetricName, MetricNameEnum } from "./value-objects/MetricName";
 
 type MetricsCountAndSum = Map<number, { sum: number, count: number }>;
+type MetricsByName = Map<MetricNameEnum, Metric[]>;
 type TimelineBase = {
   key: number;
   date: string;
@@ -15,7 +16,7 @@ export class MetricAveragesService {
   constructor() { }
 
 
-  groupMetricsByName(metrics: Metric[]): Map<MetricNameEnum, Metric[]> {
+  groupMetricsByName(metrics: Metric[]): MetricsByName {
     const metricGroups = new Map<MetricNameEnum, Metric[]>();
 
     for (const metric of metrics) {
@@ -27,6 +28,14 @@ export class MetricAveragesService {
     }
 
     return metricGroups;
+  }
+
+  reviewRequestedNames(data: MetricsByName, names: MetricName[]) {
+    names.forEach(name => {
+      if (!data.has(name.value)) {
+        data.set(name.value, [])
+      }
+    })
   }
 
   generateBaseTimeline(from: Timestamp, to: Timestamp): TimelineBase[] {

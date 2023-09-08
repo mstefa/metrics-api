@@ -17,15 +17,16 @@ export class MetricsAverageGenerator {
 
   async run(requestDto: GetMetricsRequestDto): Promise<MetricsAveragesDto> {
 
-    const name = requestDto.names.map(name => new MetricName(name))
+    const names = requestDto.names.map(name => new MetricName(name))
     const fromTimestamp = new Timestamp(requestDto.from)
     const toTimestamp = new Timestamp(requestDto.to)
 
     const metrics = await this.repository.search(
-      new MetricCriteria(name, fromTimestamp, toTimestamp)
+      new MetricCriteria(names, fromTimestamp, toTimestamp)
     )
 
     const metricsByName = this.service.groupMetricsByName(metrics)
+    this.service.reviewRequestedNames(metricsByName, names);
     const baseTimeline = this.service.generateBaseTimeline(fromTimestamp, toTimestamp);
     const metricsTimelines = this.service.calculateMetricsAverage(baseTimeline, metricsByName);
 

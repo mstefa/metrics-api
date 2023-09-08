@@ -57,6 +57,27 @@ describe('Get metrics Averages', () => {
 
   })
 
+  it('should return cero when the metric does not exist', async () => {
+    // Arrange
+    const name = MetricNameMother.random();
+    const intervalUnit = intervalUnitEnum.SECOND.toString();
+    const from = '2023-09-05T13:00:00.000Z';
+    const to = '2023-09-05T13:00:02.000Z';
+
+    metricRepositoryMock.returnOnSearch([])
+
+    // Act
+    const received = await metricsAverageGenerator.run({ names: [name.value], from, to, intervalUnit })
+
+    // Assert
+    expect(received.intervalUnit).toEqual(intervalUnitEnum.SECOND)
+    expect(received.timeValues.length).toEqual(2)
+    expect(received.timeValues[0]).toEqual(from)
+    expect(received.metricValues[0].name).toEqual(name.value)
+    expect(received.metricValues[0].values[0]).toEqual(0)
+
+  })
+
   it('should return the correct average for one metric in a second when there are data in the DB, and cero when the metric does not exist', async () => {
     // Arrange
     const name = MetricNameMother.random();

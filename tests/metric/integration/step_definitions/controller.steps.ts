@@ -1,17 +1,34 @@
-import { AfterAll, BeforeAll, Given, Then } from '@cucumber/cucumber';
+import { AfterAll, BeforeAll, Given, Then, When } from '@cucumber/cucumber';
 import * as assert from 'assert'
-// eslint-disable-next-line import/no-extraneous-dependencies
+import { MongoClient } from 'mongodb';
 import supertest from 'supertest';
 
+import { MongoMetricRepository } from '../../../../src/metric/infrastructure/MongoMetricRepository';
 import Server from '../../../../src/server';
+import { MongoClientFactory } from '../../../../src/shared/infrastructure/mongo/MongoClientFactory';
+import { SeedMetrics } from '../../../shared/db-seed/SeedMetrics';
 
 let application: Server;
 let _request: supertest.Test;
 let _response: supertest.Response;
+let _metricRepository: MongoMetricRepository;
+let _mongoClient: Promise<MongoClient>;
 
-// const mongoClient = MongoClientFactory.createClient({ url: 'mongodb://localhost:27017/mcc' });
 
-Given('I send a GET request to {string}', (route: string) => {
+Given('the metrics dataset is loaded', async () => {
+
+  const intervaleTimeDateInMilliseconds = 5 * 60 * 1000;
+  const dateFrom = new Date('2023-01-01T00:00:00.000Z')
+
+  const timestampTo = new Date(dateFrom.getTime() + intervaleTimeDateInMilliseconds)
+
+  const utility = new SeedMetrics(_metricRepository)
+
+  await utility.run(dateFrom, timestampTo, intervaleTimeDateInMilliseconds / 100);
+
+});
+
+When('I send a GET request to {string}', (route: string) => {
   _request = supertest(application.getHTTPServer()).get(route)
 });
 
@@ -43,8 +60,13 @@ Then('the response should have a payload:', (payload: string) => {
 BeforeAll(async () => {
   application = new Server('4000');
   await application.start();
+
+  _mongoClient = MongoClientFactory.createClient({ url: 'mongodb://localhost:27017/test' });
+  _metricRepository = new MongoMetricRepository(_mongoClient);
+
 });
 
 AfterAll(async () => {
+  (await _mongoClient).close(true)
   await application.stop();
 });

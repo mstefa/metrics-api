@@ -9,4 +9,4 @@ content-type: application/json
       }
 
 ### Create an article
-GET http://localhost:3000/metrics/?name=response_time&from=2023-01-01T11:00:00.000Z&to=2023-01-01T11:05:00.000Z&intervalUnit=second HTTP/1.1
+GET http://localhost:3000/metrics/?name=cpu_usage&from=2023-01-01T11:02:23.003Z&to=2023-01-01T11:05:05.899Z&intervalUnit=second HTTP/1.1
