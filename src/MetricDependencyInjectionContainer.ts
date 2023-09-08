@@ -1,32 +1,66 @@
+import { MongoClient } from 'mongodb';
+
 import { MetricCreator } from './metric/application/MetricCreator';
 import { MetricsAverageGenerator } from './metric/application/MetricsAverageGenerator';
 import { GetMetricsController } from './metric/controllers/GetMetricsController';
 import { PostMetricController } from './metric/controllers/PostMetricController';
 import { MongoMetricRepository } from './metric/infrastructure/MongoMetricRepository';
+import { config } from './shared/config/appConfig';
 import { Logger } from './shared/infrastructure/logger/Logger';
 import { MongoClientFactory } from './shared/infrastructure/mongo/MongoClientFactory';
 
-// DB
-const mongoClient = MongoClientFactory.createClient({ url: 'mongodb://localhost:27017/test' });
-const metricRepository = new MongoMetricRepository(mongoClient);
 
-//Aplication
-const metricCreator = new MetricCreator(metricRepository);
-const metricGetter = new MetricsAverageGenerator(metricRepository)
+export class DependencyContainer {
+
+  // eslint-disable-next-line no-use-before-define
+  private static instance: DependencyContainer;
+
+  public mongoClient: Promise<MongoClient>;
+
+  public metricRepository: MongoMetricRepository;
+
+  // //Aplication
+  public metricCreator: MetricCreator;
+  public metricGetter: MetricsAverageGenerator;
 
 
-// Controllers
-const postMetricController = new PostMetricController(metricCreator);
-const getMetricsController = new GetMetricsController(metricGetter)
+  // // Controllers
+  public postMetricController: PostMetricController;
+  public getMetricsController: GetMetricsController;
 
-const load = () => {
-  Logger.info('  Dependency loaded! \n');
-};
+  constructor() {
 
-export const MetricDependencyInjectionContainer = {
-  load,
-  mongoClient,
-  metricCreator,
-  postMetricController,
-  getMetricsController
-};
+    const url = `${config.db.host}/${config.app.env}`;
+    this.mongoClient = MongoClientFactory.createClient({ url });
+
+    this.metricRepository = new MongoMetricRepository(this.mongoClient);
+
+    //Aplication
+    this.metricCreator = new MetricCreator(this.metricRepository);
+    this.metricGetter = new MetricsAverageGenerator(this.metricRepository)
+
+
+    // Controllers
+    this.postMetricController = new PostMetricController(this.metricCreator);
+    this.getMetricsController = new GetMetricsController(this.metricGetter)
+
+    Logger.info(`  Environment stetted as: ${config.app.env}`)
+    Logger.info('  Dependency loaded! \n');
+
+  }
+
+  static getInstance(): DependencyContainer {
+
+    if (!DependencyContainer.instance) {
+      DependencyContainer.instance = new DependencyContainer();
+    }
+
+    return DependencyContainer.instance;
+  }
+
+}
+
+
+// export this.MetricDependencyInjectionContainer = {
+//   load
+// };

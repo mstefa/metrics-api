@@ -10,7 +10,7 @@ import httpStatus from 'http-status';
 import morgan from 'morgan';
 
 import { registerRoutes as registerMetricRoutes } from './metric/routes';
-import { MetricDependencyInjectionContainer } from './MetricDependencyInjectionContainer';
+import { DependencyContainer } from './MetricDependencyInjectionContainer';
 import { Logger } from './shared/infrastructure/logger/Logger';
 
 const router = Router();
@@ -18,11 +18,13 @@ const router = Router();
 export default class Server {
   private express: express.Express;
 
-  private port: string;
+  private port: number;
 
   private httpServer?: http.Server;
 
-  constructor(port: string) {
+  private DIContainer: DependencyContainer;
+
+  constructor(port: number) {
     this.port = port;
     this.express = express();
     this.express.use(json());
@@ -41,7 +43,7 @@ export default class Server {
     this.express.use(morganMiddleware);
 
     this.express.use(compress());
-    MetricDependencyInjectionContainer.load();
+    this.DIContainer = DependencyContainer.getInstance();
 
     router.get('/check-health', async (req: Request, res: Response) => {
       res.send('server running 💪');
@@ -60,10 +62,10 @@ export default class Server {
 
   async start(): Promise<void> {
     Logger.info('  Connecting to DB... \n');
-    await (await MetricDependencyInjectionContainer.mongoClient).connect();
+    await (await this.DIContainer.mongoClient).connect();
     Logger.info('  checking DB connection... \n');
 
-    await (await MetricDependencyInjectionContainer.mongoClient).db('admin').command({ ping: 1 });
+    await (await this.DIContainer.mongoClient).db('admin').command({ ping: 1 });
     Logger.info('  DB Connected! \n');
 
     this.httpServer = await this.express.listen(this.port, () => {
@@ -87,7 +89,7 @@ export default class Server {
 
   async stop(): Promise<void> {
     Logger.info('  Closing DB connection...\n');
-    (await MetricDependencyInjectionContainer.mongoClient).close();
+    (await this.DIContainer.mongoClient).close();
 
     Logger.info('  DB connection Close\n');
 

@@ -4,7 +4,7 @@ import { MongoClientFactory } from './src/shared/infrastructure/mongo/MongoClien
 import { SeedMetrics } from './tests/shared/db-seed/SeedMetrics'
 
 // DB
-const mongoClient = MongoClientFactory.createClient({ url: 'mongodb://localhost:27017/test' });
+const mongoClient = MongoClientFactory.createClient({ url: 'mongodb://localhost:27017/local' });
 const metricRepository = new MongoMetricRepository(mongoClient);
 
 const intervaleTimeDateInMilliseconds = 5 * 60 * 1000;

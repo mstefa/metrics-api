@@ -1,12 +1,14 @@
 import { Request, Response, Router } from 'express';
 import { body, query } from 'express-validator';
 
-import { MetricDependencyInjectionContainer } from '../../MetricDependencyInjectionContainer';
+import { DependencyContainer } from '../../MetricDependencyInjectionContainer';
 import { intervalUnitEnum } from '../domain/value-objects/intervalUnit';
 import { MetricNameEnum } from '../domain/value-objects/MetricName';
 import { validateReqSchema } from '.';
 
 export const register = (router: Router) => {
+
+  const DIContainer = DependencyContainer.getInstance();
 
   const reqPostArticleSchema = [
     body('timestamp')
@@ -41,10 +43,10 @@ export const register = (router: Router) => {
   ];
 
   router.post('/metric', reqPostArticleSchema, validateReqSchema, (req: Request, res: Response) =>
-    MetricDependencyInjectionContainer.postMetricController.run(req, res)
+    DIContainer.postMetricController.run(req, res)
   );
 
   router.get('/metrics', reqGetArticleSchema, validateReqSchema, (req: Request, res: Response) =>
-    MetricDependencyInjectionContainer.getMetricsController.run(req, res)
+    DIContainer.getMetricsController.run(req, res)
   );
 };

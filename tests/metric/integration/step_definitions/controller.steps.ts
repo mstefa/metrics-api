@@ -5,6 +5,7 @@ import supertest from 'supertest';
 
 import { MongoMetricRepository } from '../../../../src/metric/infrastructure/MongoMetricRepository';
 import Server from '../../../../src/server';
+import { config } from '../../../../src/shared/config/appConfig';
 import { MongoClientFactory } from '../../../../src/shared/infrastructure/mongo/MongoClientFactory';
 import { SeedMetrics } from '../../../shared/db-seed/SeedMetrics';
 
@@ -57,16 +58,31 @@ Then('the response should have a payload:', (payload: string) => {
   assert.deepStrictEqual(_response.body, expected);
 });
 
-BeforeAll(async () => {
-  application = new Server('4000');
-  await application.start();
+Then('the response has as unit {string}, with {int} values starting from {string}', (unit: string, numberOfValues: number, fromDate: string) => {
+  assert.deepStrictEqual(_response.body.intervalUnit, unit)
+  assert.deepStrictEqual(_response.body.timeValues.length, numberOfValues)
+  assert.deepStrictEqual(_response.body.timeValues[0], fromDate)
+});
 
-  _mongoClient = MongoClientFactory.createClient({ url: 'mongodb://localhost:27017/test' });
+BeforeAll(async () => {
+  application = new Server(4000);
+  await application.start();
+  const url = `${config.db.host}/${config.app.env}`;
+  _mongoClient = MongoClientFactory.createClient({ url });
   _metricRepository = new MongoMetricRepository(_mongoClient);
 
 });
 
 AfterAll(async () => {
-  (await _mongoClient).close(true)
+  const client = await _mongoClient
+  const collections = await client.db().listCollections(undefined, { nameOnly: true }).toArray();
+  const collectionsNames = collections.map(collection => collection.name);
+  for (const collectionName of collectionsNames) {
+    // eslint-disable-next-line no-await-in-loop
+    await client.db().collection(collectionName).deleteMany({});
+  }
+
+  client.close(true)
   await application.stop();
+
 });
