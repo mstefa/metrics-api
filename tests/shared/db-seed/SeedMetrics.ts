@@ -2,7 +2,7 @@ import { MetricRepository } from "../../../src/metric/domain/MetricRepository";
 import { MetricName, MetricNameEnum } from "../../../src/metric/domain/value-objects/MetricName";
 import { Logger } from "../../../src/shared/infrastructure/logger/Logger";
 import { MetricMother } from "../../metric/unit/MetricMother";
-import { DateMother } from "../data-generator/DateMother";
+import { DateMother } from "../entities-mothers/DateMother";
 
 
 export class SeedMetrics {

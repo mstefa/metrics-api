@@ -25,8 +25,11 @@ export class MetricsAverageGenerator {
       new MetricCriteria(name, fromTimestamp, toTimestamp)
     )
 
-    const response = this.service.calculateAveragePerSecond(fromTimestamp, toTimestamp, metrics);
+    const metricsByName = this.service.groupMetricsByName(metrics)
+    const baseTimeline = this.service.generateBaseTimeline(fromTimestamp, toTimestamp);
+    const metricsTimelines = this.service.calculateMetricsAverage(baseTimeline, metricsByName);
 
-    return response;
+    return this.service.mapValuesToAverageDto(baseTimeline, metricsTimelines)
+
   }
 }
