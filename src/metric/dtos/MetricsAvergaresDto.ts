@@ -1,4 +1,4 @@
-import { intervalUnitEnum } from "../domain/value-objects/intervalUnit";
+import { IntervalUnitEnum } from "../domain/value-objects/IntervalUnit";
 import { MetricNameEnum } from "../domain/value-objects/MetricName";
 
 export type MetricsAveragesValues = {
@@ -7,7 +7,7 @@ export type MetricsAveragesValues = {
 }
 
 export type MetricsAveragesDto = {
-  intervalUnit: intervalUnitEnum;
+  intervalUnit: IntervalUnitEnum;
   timeValues: string[];
   metricValues: MetricsAveragesValues[];
 

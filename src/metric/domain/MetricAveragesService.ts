@@ -2,7 +2,7 @@
 import { Timestamp } from "../../shared/domain/value-objects/Timestampt";
 import { MetricsAveragesDto, MetricsAveragesValues } from "../dtos/MetricsAvergaresDto";
 import { Metric } from "./Metric";
-import { intervalUnitEnum } from "./value-objects/intervalUnit";
+import { IntervalUnit } from "./value-objects/IntervalUnit";
 import { MetricName, MetricNameEnum } from "./value-objects/MetricName";
 
 type MetricsCountAndSum = Map<number, { sum: number, count: number }>;
@@ -38,29 +38,29 @@ export class MetricAveragesService {
     })
   }
 
-  generateBaseTimeline(from: Timestamp, to: Timestamp): TimelineBase[] {
+  generateBaseTimeline(from: Timestamp, to: Timestamp, timeInterval: number): TimelineBase[] {
 
     const timeline: TimelineBase[] = [];
     const currentDate = from.value;
 
     while (currentDate < to.value) {
-      const timestampInSeconds = Math.floor(currentDate.getTime() / 1000)
+      const timestampInSeconds = Math.floor(currentDate.getTime() / (1000 * timeInterval))
       timeline.push({
         key: timestampInSeconds,
         date: currentDate.toISOString(),
       })
-      currentDate.setSeconds(currentDate.getSeconds() + 1);
+      currentDate.setSeconds(currentDate.getSeconds() + timeInterval);
     }
 
     return timeline
   }
 
-  calculateMetricsAverage(baseTimeline: TimelineBase[], metrics: Map<MetricNameEnum, Metric[]>): MetricsAveragesValues[] {
+  calculateMetricsAverage(baseTimeline: TimelineBase[], metrics: Map<MetricNameEnum, Metric[]>, timeInterval: number): MetricsAveragesValues[] {
 
     const metricValue: MetricsAveragesValues[] = [];
 
     metrics.forEach((metric, index) => {
-      const data = this.getMetricsCountAndSum(metric)
+      const data = this.getMetricsCountAndSum(metric, timeInterval)
       const average = this.generateAverageValues(baseTimeline, data)
       metricValue.push({
         name: index,
@@ -72,18 +72,18 @@ export class MetricAveragesService {
   }
 
 
-  mapValuesToAverageDto(baseTimeline: TimelineBase[], metrics: MetricsAveragesValues[]): MetricsAveragesDto {
+  mapValuesToAverageDto(baseTimeline: TimelineBase[], metrics: MetricsAveragesValues[], intervalUnit: IntervalUnit): MetricsAveragesDto {
     return {
-      intervalUnit: intervalUnitEnum.SECOND,
+      intervalUnit: intervalUnit.value,
       timeValues: baseTimeline.map(e => e.date),
       metricValues: metrics
     };
   }
 
-  private getMetricsCountAndSum(metrics: Metric[]) {
+  private getMetricsCountAndSum(metrics: Metric[], timeInterval: number) {
     const metricsCountAndSum: MetricsCountAndSum = new Map();
     for (const metric of metrics) {
-      const timestampInSeconds = Math.floor(metric.timestamp.value.getTime() / 1000);
+      const timestampInSeconds = Math.floor(metric.timestamp.value.getTime() / (1000 * timeInterval));
       if (!metricsCountAndSum.has(timestampInSeconds)) {
         metricsCountAndSum.set(timestampInSeconds, { sum: metric.value.value, count: 1 });
       } else {

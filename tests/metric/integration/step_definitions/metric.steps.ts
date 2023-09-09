@@ -7,7 +7,7 @@ import { MongoMetricRepository } from '../../../../src/metric/infrastructure/Mon
 import Server from '../../../../src/server';
 import { config } from '../../../../src/shared/config/appConfig';
 import { MongoClientFactory } from '../../../../src/shared/infrastructure/mongo/MongoClientFactory';
-import { SeedMetrics } from '../../../shared/db-seed/SeedMetrics';
+import { seedDB } from './steps-utilities';
 
 let application: Server;
 let _request: supertest.Test;
@@ -15,19 +15,6 @@ let _response: supertest.Response;
 let _metricRepository: MongoMetricRepository;
 let _mongoClient: Promise<MongoClient>;
 
-
-Given('the metrics dataset is loaded', async () => {
-
-  const intervaleTimeDateInMilliseconds = 5 * 60 * 1000;
-  const dateFrom = new Date('2023-01-01T00:00:00.000Z')
-
-  const timestampTo = new Date(dateFrom.getTime() + intervaleTimeDateInMilliseconds)
-
-  const utility = new SeedMetrics(_metricRepository)
-
-  await utility.run(dateFrom, timestampTo, intervaleTimeDateInMilliseconds / 100);
-
-});
 
 When('I send a GET request to {string}', (route: string) => {
   _request = supertest(application.getHTTPServer()).get(route)
@@ -58,9 +45,10 @@ Then('the response should have a payload:', (payload: string) => {
   assert.deepStrictEqual(_response.body, expected);
 });
 
-Then('the response has as unit {string}, with {int} values starting from {string}', (unit: string, numberOfValues: number, fromDate: string) => {
+Then('the response has as unit {string}, with {int} values starting from {string} and {int} sets of values', (unit: string, numberOfValues: number, fromDate: string, numberOfSet: number) => {
   assert.deepStrictEqual(_response.body.intervalUnit, unit)
   assert.deepStrictEqual(_response.body.timeValues.length, numberOfValues)
+  assert.deepStrictEqual(_response.body.metricValues.length, numberOfSet)
   assert.deepStrictEqual(_response.body.timeValues[0], fromDate)
 });
 
@@ -70,6 +58,7 @@ BeforeAll(async () => {
   const url = `${config.db.host}/${config.app.env}`;
   _mongoClient = MongoClientFactory.createClient({ url });
   _metricRepository = new MongoMetricRepository(_mongoClient);
+  await seedDB(_metricRepository)
 
 });
 
@@ -82,7 +71,9 @@ AfterAll(async () => {
     await client.db().collection(collectionName).deleteMany({});
   }
 
-  client.close(true)
+  await client.close(true)
   await application.stop();
 
 });
+
+

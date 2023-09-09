@@ -7,10 +7,10 @@ import { SeedMetrics } from './tests/shared/db-seed/SeedMetrics'
 const mongoClient = MongoClientFactory.createClient({ url: 'mongodb://localhost:27017/local' });
 const metricRepository = new MongoMetricRepository(mongoClient);
 
-const intervaleTimeDateInMilliseconds = 5 * 60 * 1000;
-const dateFrom = new Date('2023-01-01T12:00:00.000Z')
+const intervaleTimeDateInMilliseconds = 10 * 60 * 60 * 1000;
+const dateTo = new Date()
 
-const timestampTo = new Date(dateFrom.getTime() + intervaleTimeDateInMilliseconds)
+const dateFrom = new Date(dateTo.getTime() - intervaleTimeDateInMilliseconds)
 
 const utility = new SeedMetrics(metricRepository)
 
@@ -18,7 +18,7 @@ Logger.info('loading data on test DB')
 
 async function run() {
 
-  await utility.run(dateFrom, timestampTo, intervaleTimeDateInMilliseconds / 100);
+  await utility.run(dateFrom, dateTo, intervaleTimeDateInMilliseconds / 100);
 
 
   (await mongoClient).close(true)
