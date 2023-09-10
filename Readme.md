@@ -1,15 +1,13 @@
-# TypeScript Project Template
+# Metrics Api
 
-This template is designed to provide a consistent structure for TypeScript projects for my personal projects.
+This api handles data storage, retrieval, and manipulation, enabling the frontend to present graphical representations of metrics over time.
 
 ## Documentation
 
 The `docs` directory contains important documentation for the project:
 
-* `docs/design/`: This section provides a summary of the choices made and assumptions taken during the development process and offers insights into the application's design rationale and model.
-* `docs/requests/request-example.rest`: Example REST API requests that can be executed using the VSCode REST Client extension.
-* `docs/requests/swagger.yaml`: The Swagger API specification file.
-
+- `docs/architecture/`: This section provides an overview of the layers architecture used in this service
+- `docs/requests/request-example.rest`: Example REST API requests that can be executed using the VSCode REST Client extension.
 
 ## Run project on local
 
@@ -25,7 +23,7 @@ To run the project on developer mode:
 npm run dev
 ```
 
-of build the project 
+of build the project
 
 ```
 npm install
@@ -36,25 +34,24 @@ npm start
 
 In either scenario, your application should now be reachable via http://localhost:3000.
 
+## Testing
 
-## Testing 
-
-* For unit tests (using Jest):
+- For unit tests (using Jest):
 
 ```
 npm run test:unit
 
 ```
 
-* For integration tests (using Cucumber and supertest):
+- For integration tests (using Cucumber and supertest):
 
 ```
 npm run test:integration
 ```
 
-Integration tests will verify the database connection, but please be aware that ***running integration tests will result in the deletion of all database data.*** ⚠️
+Integration tests will verify the database connection, but please be aware that **_running integration tests will result in the deletion of all database data._** ⚠️
 
-It is possible to launch all test together with 
+It is possible to launch all test together with
 
 ```
 npm run test
