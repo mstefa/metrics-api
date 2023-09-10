@@ -30,8 +30,7 @@ export class MetricsAverageGenerator {
       new MetricCriteria(names, fromTimestamp, toTimestamp)
     )
 
-    const metricsByName = this.service.groupMetricsByName(metrics)
-    this.service.reviewRequestedNames(metricsByName, names); //TODO
+    const metricsByName = this.service.groupMetricsByName(metrics, names)
     const baseTimeline = this.service.generateBaseTimeline(fromTimestamp, toTimestamp, timeInterval);
     const metricsTimelines = this.service.calculateMetricsAverage(baseTimeline, metricsByName, timeInterval);
 

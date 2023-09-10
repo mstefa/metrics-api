@@ -49,7 +49,7 @@ npm run test:unit
 npm run test:integration
 ```
 
-Integration tests will verify the database connection, but please be aware that **_running integration tests will result in the deletion of all database data._** ⚠️
+Integration tests will verify the database connection, **Database service should be active for running this test**
 
 It is possible to launch all test together with
 

@@ -16,7 +16,7 @@ export class MetricAveragesService {
   constructor() { }
 
 
-  groupMetricsByName(metrics: Metric[]): MetricsByName {
+  groupMetricsByName(metrics: Metric[], names: MetricName[]): MetricsByName {
     const metricGroups = new Map<MetricNameEnum, Metric[]>();
 
     for (const metric of metrics) {
@@ -26,16 +26,9 @@ export class MetricAveragesService {
       }
       metricGroups.get(name)?.push(metric);
     }
+    this.reviewRequestedNames(metricGroups, names)
 
     return metricGroups;
-  }
-
-  reviewRequestedNames(data: MetricsByName, names: MetricName[]) {
-    names.forEach(name => {
-      if (!data.has(name.value)) {
-        data.set(name.value, [])
-      }
-    })
   }
 
   generateBaseTimeline(from: Timestamp, to: Timestamp, timeInterval: number): TimelineBase[] {
@@ -107,5 +100,13 @@ export class MetricAveragesService {
     })
 
     return averages;
+  }
+
+  private reviewRequestedNames(data: MetricsByName, names: MetricName[]) {
+    names.forEach(name => {
+      if (!data.has(name.value)) {
+        data.set(name.value, [])
+      }
+    })
   }
 }
