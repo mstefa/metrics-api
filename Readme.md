@@ -6,7 +6,6 @@ This api handles data storage, retrieval, and manipulation, enabling the fronten
 
 The `docs` directory contains important documentation for the project:
 
-- `docs/architecture/`: This section provides an overview of the layers architecture used in this service
 - `docs/requests/request-example.rest`: Example REST API requests that can be executed using the VSCode REST Client extension.
 
 ## Run project on local
@@ -55,5 +54,35 @@ It is possible to launch all test together with
 
 ```
 npm run test
+
+```
+
+# Architecture overview
+
+```mermaid
+sequenceDiagram
+    actor U as Client
+    participant C as Controller
+    participant S as Application
+    participant R as Repository
+    participant DB
+    U->>C: HTTP Request
+        Note right of C: request validation
+        Note right of S: business logic
+        Note right of R: persistence
+    C->>S: call
+    S->>S: call Domain Objects
+    S->>R: call
+    S->>S: call Domain Objects
+    R->>DB: call
+    DB->>R: return
+    R->>S: return
+    S->>C: return
+    C->>U: response
+    Note right of C: Test Scopes
+
+    C-->>R: Unit Test
+    U-->>DB: Integration Test
+
 
 ```

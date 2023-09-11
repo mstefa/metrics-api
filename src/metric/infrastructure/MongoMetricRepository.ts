@@ -32,8 +32,8 @@ export class MongoMetricRepository extends MongoRepository<Metric> implements Me
     const collection = await this.collection();
     const metricDocuments = await collection.find<ArticleDocument>({
       timestamp: {
-        $gt: criteria.from.toString(),
-        $lt: criteria.to.toString()
+        $gte: criteria.from.toString(),
+        $lte: criteria.to.toString()
       },
       name: { $in: criteria.metricName },
     }).toArray()

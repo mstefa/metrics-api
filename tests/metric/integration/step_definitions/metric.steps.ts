@@ -1,11 +1,14 @@
-import { AfterAll, BeforeAll, Given, Then, When } from '@cucumber/cucumber';
+import { AfterAll, BeforeAll, Then, When } from '@cucumber/cucumber';
 import * as assert from 'assert'
 import { MongoClient } from 'mongodb';
 import supertest from 'supertest';
 
+import { MetricCriteria } from '../../../../src/metric/domain/MetricCriteria';
+import { MetricName } from '../../../../src/metric/domain/value-objects/MetricName';
 import { MongoMetricRepository } from '../../../../src/metric/infrastructure/MongoMetricRepository';
 import Server from '../../../../src/server';
 import { config } from '../../../../src/shared/config/appConfig';
+import { Timestamp } from '../../../../src/shared/domain/value-objects/Timestampt';
 import { MongoClientFactory } from '../../../../src/shared/infrastructure/mongo/MongoClientFactory';
 import { seedDB } from './steps-utilities';
 
@@ -20,7 +23,7 @@ When('I send a GET request to {string}', (route: string) => {
   _request = supertest(application.getHTTPServer()).get(route)
 });
 
-Given('I send a POST request to {string} with body:', (route: string, bodyData: string) => {
+When('I send a POST request to {string} with body:', (route: string, bodyData: string) => {
   const body = JSON.parse(bodyData)
   _request = supertest(application.getHTTPServer())
     .post(route)
@@ -43,6 +46,18 @@ Then('the body should have a message {string}', (message: string) => {
 Then('the response should have a payload:', (payload: string) => {
   const expected = JSON.parse(payload)
   assert.deepStrictEqual(_response.body, expected);
+});
+
+Then('the Metric should be save in the db:', async (payload: string) => {
+  const expectedMetric = JSON.parse(payload)
+  const name = new MetricName(expectedMetric.name);
+  const from = new Timestamp(expectedMetric.timestamp);
+  const to = new Timestamp(expectedMetric.timestamp);
+
+  const criteria = new MetricCriteria([name], from, to)
+  const metricOnDb = await _metricRepository.search(criteria)
+
+  assert.deepStrictEqual(1, metricOnDb.length)
 });
 
 Then('the response has as unit {string}, with {int} values starting from {string} and {int} sets of values', (unit: string, numberOfValues: number, fromDate: string, numberOfSet: number) => {
