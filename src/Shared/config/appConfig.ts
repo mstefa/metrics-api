@@ -29,7 +29,7 @@ const config: AppConfig = {
     host: process.env.SERVER_HOST as string
   },
   db: {
-    host: process.env.BD_HOST || 'mongodb://localhost:27017',
+    host: process.env.BD_HOST || 'mongodb://0.0.0.0:27017',
     user: process.env.BD_USER || '',
     pass: process.env.BD_PWD || '',
   }

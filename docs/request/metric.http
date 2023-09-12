@@ -3,10 +3,10 @@ POST http://localhost:3000/metric HTTP/1.1
 content-type: application/json
 
       {
-        "timestamp": "2023-09-03T15:45:23.000Z",
+        "timestamp": "2023-09-12T07:45:23.000Z",
         "name": "response_time",
         "value": 10
       }
 
 ### Create an article
-GET http://localhost:3000/metrics/?name=cpu_usage&from=2023-09-01T05:55:55.003Z&to=2023-09-01T06:07:55.003Z&intervalUnit=second HTTP/1.1
+GET http://localhost:3000/metrics/?name=cpu_usage&from=2023-09-09T02:27:32.231Z&to=2023-09-12T07:50:51.003Z&intervalUnit=hour HTTP/1.1

@@ -4,12 +4,25 @@ services:
   mongo:
     image: mongo:6.0.2
     environment:
-      - MONGO_URL=mongodb://mongo:27017/dev
+      - MONGO_URL=mongodb://mongo:27017
     volumes:
       - ./data/mongo:/data/db:delegated
     ports:
       - 27017:27017
+    networks:
+      - my-network
+
+  api-service:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    environment:
+      - BD_HOST=mongodb://mongo
+    networks:
+      - my-network
 
 networks:
-  rabbitmq_go_net:
+  my-network:
     driver: bridge
