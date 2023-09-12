@@ -10,13 +10,7 @@ The `docs` directory contains important documentation for the project:
 
 ## Run project on local
 
-This project requires a MongoDB server. A Docker Compose file is provided to create a Docker container with these dependency. To start the service, run:
-
-```
-docker-compose up -d
-```
-
-To run the project on developer mode:
+This project requires a MongoDB server. Once the mongo server is running is possible to run the project on developer mode:
 
 ```
 npm run dev
@@ -31,6 +25,13 @@ npm start
 
 ```
 
+Alternative a ``docker-compose` file is provided to create a Docker container with these dependency. To start the service, run:
+
+```
+docker-compose up -d
+```
+
+s
 In either scenario, your application should now be reachable via http://localhost:3000.
 
 ## Testing

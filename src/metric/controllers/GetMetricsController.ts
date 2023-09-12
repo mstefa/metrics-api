@@ -27,7 +27,6 @@ export class GetMetricsController extends Controller {
     const from = req.query.from as string;
     const to = req.query.to as string;
 
-    // Logger.info(`request received in ${req.path}`); TODO
     try {
       const names = toArrayOfString(queryParamNames);
       const article = await this.metricGetter.run({ names, from, to, intervalUnit });

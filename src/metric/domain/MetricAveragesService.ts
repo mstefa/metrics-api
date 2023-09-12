@@ -1,4 +1,3 @@
-//TODO
 import { Timestamp } from "../../shared/domain/value-objects/Timestampt";
 import { MetricsAveragesDto, MetricsAveragesValues } from "../dtos/MetricsAvergaresDto";
 import { Metric } from "./Metric";
